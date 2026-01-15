@@ -4,6 +4,7 @@ import 'core/injectors/injector_all.dart';
 import 'features/characters/presentation/bloc/characters_bloc.dart';
 import 'features/characters/presentation/pages/characters_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
+import 'features/planets/presentation/pages/planets_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,11 +36,8 @@ class MyApp extends StatelessWidget {
               child: const CharactersPage(),
             ),
 
-        // '/planets': (_) => BlocProvider<PlanetsBloc>(
-        //       create: (_) => gt<PlanetsBloc>()
-        //         ..add(const GetPlanetsEvent(page: 1, limit: 5)),
-        //       child: const PlanetsPage(),
-        //     ),
+      // ✅ Planets SIN Bloc
+      '/planets': (_) => const PlanetsPage(),
       },
     );
   }

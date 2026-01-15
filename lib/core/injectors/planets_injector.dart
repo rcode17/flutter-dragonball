@@ -1,27 +1,22 @@
-import 'package:get_it/get_it.dart';
-import 'package:http/http.dart' as http;
+
 
 import '../../features/planets/data/datasources/planet_remote_datasource.dart';
 import '../../features/planets/data/repositories/planet_repository_impl.dart';
 import '../../features/planets/domain/repositories/planet_repository.dart';
 import '../../features/planets/domain/usecases/get_planets.dart';
+import 'injector_all.dart';
 
-final sl = GetIt.instance;
-
-void initPlanets() {
-  // 🔹 External
-  sl.registerLazySingleton(() => http.Client());
-
+Future<void> initPlanets() async {
   // 🔹 Data sources
-  sl.registerLazySingleton<PlanetRemoteDataSource>(
-    () => PlanetRemoteDataSourceImpl(sl()),
+  gt.registerLazySingleton<PlanetRemoteDataSource>(
+    () => PlanetRemoteDataSourceImpl(gt()),
   );
 
   // 🔹 Repository
-  sl.registerLazySingleton<PlanetRepository>(
-    () => PlanetRepositoryImpl(sl()),
+  gt.registerLazySingleton<PlanetRepository>(
+    () => PlanetRepositoryImpl(gt()),
   );
 
   // 🔹 Use cases
-  sl.registerLazySingleton(() => GetPlanets(sl()));
+  gt.registerLazySingleton(() => GetPlanets(gt()));
 }

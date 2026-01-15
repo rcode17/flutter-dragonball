@@ -8,11 +8,9 @@ import 'injector_all.dart';
 
 Future<void> initCharactersInjector() async {
   // Data sources
-  if (!gt.isRegistered<CharactersRemoteDatasource>()) {
-    gt.registerLazySingleton<CharactersRemoteDatasource>(
-      () => CharactersRemoteDatasourceImpl(gt()),
-    );
-  }
+  gt.registerLazySingleton<CharactersRemoteDatasource>(
+    () => CharactersRemoteDatasourceImpl(gt()),
+  );
 
   // Repository
   if (!gt.isRegistered<CharacterRepository>()) {
