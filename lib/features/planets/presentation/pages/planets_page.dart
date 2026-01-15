@@ -4,6 +4,8 @@ import '../../../../core/injectors/injector_all.dart';
 import '../../domain/entities/planet.dart';
 import '../../domain/entities/pagination_meta.dart';
 import '../../domain/usecases/get_planets.dart';
+import 'package:verse_ds/design/organisms/cards/dashboard_card_container.dart';
+import 'package:verse_ds/design/tokens/spacing.dart';
 
 class PlanetsPage extends StatefulWidget {
   const PlanetsPage({super.key});
@@ -68,19 +70,30 @@ class _PlanetsPageState extends State<PlanetsPage> {
     }
 
     return ListView.builder(
-      itemCount: _planets.length,
-      itemBuilder: (context, index) {
-        final planet = _planets[index];
-        return ListTile(
+  padding: const EdgeInsets.all(spacing2),
+  itemCount: _planets.length,
+  itemBuilder: (context, index) {
+    final planet = _planets[index];
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: spacing2),
+      child: DashboardCardContainer(
+        child: ListTile(
           leading: Image.network(
             planet.image,
             width: 50,
-            errorBuilder: (_, __, ___) => const Icon(Icons.public),
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.public),
           ),
           title: Text(planet.name),
-          subtitle: Text(planet.description),
-        );
-      },
+          subtitle: Text(
+            planet.description,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
     );
+  },
+);
   }
 }
