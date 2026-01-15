@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/character.dart';
+import 'package:verse_ds/design/organisms/cards/dashboard_card_container.dart';
 
 class CharacterListItem extends StatelessWidget {
   final Character character;
@@ -11,7 +12,7 @@ class CharacterListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return DashboardCardContainer(
       child: ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),

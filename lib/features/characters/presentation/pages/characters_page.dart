@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/characters_bloc.dart';
 import '../bloc/characters_state.dart';
 import '../widgets/character_list_item.dart';
+import 'package:verse_ds/design/tokens/spacing.dart';
 
 
 class CharactersPage extends StatelessWidget {
@@ -79,9 +80,10 @@ class CharactersPage extends StatelessWidget {
             }
 
             return ListView.separated(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(spacing2),
               itemCount: characters.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: spacing2),
               itemBuilder: (context, index) {
                 final c = characters[index];
                 return CharacterListItem(character: c);
