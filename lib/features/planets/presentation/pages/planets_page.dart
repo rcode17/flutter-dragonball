@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/injectors/injector_all.dart';
 import '../../domain/entities/planet.dart';
 import '../../domain/entities/pagination_meta.dart';
 import '../../domain/usecases/get_planets.dart';
-import '../../../../core/injectors/planets_injector.dart';
 
 class PlanetsPage extends StatefulWidget {
   const PlanetsPage({super.key});
@@ -23,7 +23,7 @@ class _PlanetsPageState extends State<PlanetsPage> {
   @override
   void initState() {
     super.initState();
-    _getPlanets = sl<GetPlanets>();
+    _getPlanets = gt<GetPlanets>();
     _loadPlanets();
   }
 
