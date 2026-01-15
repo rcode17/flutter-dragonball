@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:verse_ds/theme/verse_theme.dart';
 import 'core/injectors/injector_all.dart';
 import 'features/characters/presentation/bloc/characters_bloc.dart';
 import 'features/characters/presentation/pages/characters_page.dart';
@@ -20,10 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Dragon Ball',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: VerseTheme.lightTheme,
 
       // ✅ Home global
       home: const HomePage(),

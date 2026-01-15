@@ -70,9 +70,9 @@ class _PlanetsPageState extends State<PlanetsPage> {
     }
 
     return ListView.builder(
-  padding: const EdgeInsets.all(spacing2),
-  itemCount: _planets.length,
-  itemBuilder: (context, index) {
+    padding: const EdgeInsets.all(spacing2),
+    itemCount: _planets.length,
+    itemBuilder: (context, index) {
     final planet = _planets[index];
 
     return Padding(
