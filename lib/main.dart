@@ -6,6 +6,7 @@ import 'features/characters/presentation/bloc/characters_bloc.dart';
 import 'features/characters/presentation/pages/characters_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/planets/presentation/pages/planets_page.dart';
+import 'features/splash/presentation/pages/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,11 +24,12 @@ class MyApp extends StatelessWidget {
       title: 'Dragon Ball',
       theme: VerseTheme.lightTheme,
 
-      // ✅ Home global
-      home: const HomePage(),
+      initialRoute: '/',
 
       // ✅ Rutas
       routes: {
+        '/': (_) => const SplashPage(),
+        '/home': (_) => const HomePage(),
         '/characters': (_) => BlocProvider<CharactersBloc>(
               create: (_) => gt<CharactersBloc>()
                 ..add(const GetCharactersEvent(page: 1, limit: 5)),
