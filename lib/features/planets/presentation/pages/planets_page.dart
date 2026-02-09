@@ -3,6 +3,7 @@ import 'package:dragonball/features/planets/presentation/bloc/planet_bloc.dart';
 import 'package:dragonball/features/planets/presentation/bloc/planet_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../core/injectors/injector_all.dart';
 import '../../domain/entities/planet.dart';
@@ -20,6 +21,7 @@ class PlanetsPage extends StatefulWidget {
 
 class _PlanetsPageState extends State<PlanetsPage> {
   late final GetPlanets _getPlanets;
+  late final WebViewController _controller;
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -31,6 +33,12 @@ class _PlanetsPageState extends State<PlanetsPage> {
     super.initState();
     _getPlanets = gt<GetPlanets>();
     _loadPlanets();
+    _controller = WebViewController()
+      ..setJavaScriptMode(
+        JavaScriptMode.unrestricted,
+      ) // Permite ejecución de JS
+      ..setBackgroundColor(const Color(0x00000000))
+      ..loadRequest(Uri.parse('https://pub.dev/'));
   }
 
   Future<void> _loadPlanets({int page = 1}) async {
@@ -120,40 +128,39 @@ class _PlanetsPageState extends State<PlanetsPage> {
         const SizedBox(width: 8),
 
         Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// 🪐 TÍTULO
-            Text(
-              planet.name,
-              style: Theme.of(context).textTheme.titleMedium,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-
-            const SizedBox(height: 4),
-
-            /// 📄 DESCRIPCIÓN
-            Text(
-              planet.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 14,
-                height: 1.3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// 🪐 TÍTULO
+              Text(
+                planet.name,
+                style: Theme.of(context).textTheme.titleMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+
+              const SizedBox(height: 4),
+
+              /// 📄 DESCRIPCIÓN
+              Text(
+                planet.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 14, height: 1.3),
+              ),
+              WebViewWidget(controller: _controller),
+            ],
+          ),
         ),
-      ),
 
         const SizedBox(width: 8),
 
         /// 🟦 ACCIÓN DE CONTEXTO
         ElevatedButton(
-          onPressed: () {
-            // navegación / acción futura
-          },
+          onPressed: () => _showWebView(
+            context,
+            'https://pub.dev/',
+          ), // Aquí iría planet.wikiUrl o similar
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(40, 32),
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -162,7 +169,8 @@ class _PlanetsPageState extends State<PlanetsPage> {
         ),
         BlocBuilder<PlanetBloc, PlanetState>(
           builder: (context, state) {
-            final isFavorite = state is PlanetFavoriteState &&
+            final isFavorite =
+                state is PlanetFavoriteState &&
                 state.favoritePlanet?.id == planet.id;
 
             return IconButton(
@@ -171,14 +179,46 @@ class _PlanetsPageState extends State<PlanetsPage> {
                 color: isFavorite ? Colors.red : Colors.grey,
               ),
               onPressed: () {
-                context
-                    .read<PlanetBloc>()
-                    .add(SetFavoritePlanetEvent(planet));
+                context.read<PlanetBloc>().add(SetFavoritePlanetEvent(planet));
               },
             );
           },
         ),
       ],
+    );
+  }
+
+  void _showWebView(BuildContext context, String url) {
+    // Inicializamos el controlador justo antes de mostrarlo
+    final WebViewController controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..loadRequest(Uri.parse(url));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Permite que use más espacio
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.85, // 85% de la pantalla
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            // Barra de control (Criterio de HU.7: Iconos intuitivos)
+            ListTile(
+              title: const Text("Documentación del Planeta"),
+              trailing: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            Expanded(child: WebViewWidget(controller: controller)),
+          ],
+        ),
+      ),
     );
   }
 }
