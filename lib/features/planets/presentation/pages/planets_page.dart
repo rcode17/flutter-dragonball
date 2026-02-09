@@ -1,4 +1,8 @@
+import 'package:dragonball/features/planets/presentation/bloc/favorite_planet_event.dart';
+import 'package:dragonball/features/planets/presentation/bloc/planet_bloc.dart';
+import 'package:dragonball/features/planets/presentation/bloc/planet_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/injectors/injector_all.dart';
 import '../../domain/entities/planet.dart';
@@ -54,13 +58,6 @@ class _PlanetsPageState extends State<PlanetsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Planetas')),
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildBody() {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -69,31 +66,119 @@ class _PlanetsPageState extends State<PlanetsPage> {
       return Center(child: Text(_errorMessage!));
     }
 
-    return ListView.builder(
-  padding: const EdgeInsets.all(spacing2),
-  itemCount: _planets.length,
-  itemBuilder: (context, index) {
-    final planet = _planets[index];
+    if (_planets.isEmpty) {
+      return const Center(child: Text('No hay planetas'));
+    }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: spacing2),
-      child: DashboardCardContainer(
-        child: ListTile(
-          leading: Image.network(
+    final width = MediaQuery.of(context).size.width;
+
+    int crossAxisCount;
+    double childAspectRatio;
+
+    if (width < 600) {
+      crossAxisCount = 1;
+      childAspectRatio = 3.5; // Row necesita más ancho
+    } else if (width < 1024) {
+      crossAxisCount = 2;
+      childAspectRatio = 3.8;
+    } else {
+      crossAxisCount = 3;
+      childAspectRatio = 4.0;
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(spacing2),
+      itemCount: _planets.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        mainAxisSpacing: spacing2,
+        crossAxisSpacing: spacing2,
+        childAspectRatio: childAspectRatio,
+      ),
+      itemBuilder: (context, index) {
+        final planet = _planets[index];
+
+        return DashboardCardContainer(child: contentPlanetInfo(planet));
+      },
+    );
+  }
+
+  Widget contentPlanetInfo(Planet planet) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          height: 120,
+          child: Image.network(
             planet.image,
-            width: 50,
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.public),
-          ),
-          title: Text(planet.name),
-          subtitle: Text(
-            planet.description,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const Icon(Icons.public, size: 20),
           ),
         ),
+
+        const SizedBox(width: 8),
+
+        Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// 🪐 TÍTULO
+            Text(
+              planet.name,
+              style: Theme.of(context).textTheme.titleMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+
+            const SizedBox(height: 4),
+
+            /// 📄 DESCRIPCIÓN
+            Text(
+              planet.description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.3,
+              ),
+            ),
+          ],
+        ),
       ),
+
+        const SizedBox(width: 8),
+
+        /// 🟦 ACCIÓN DE CONTEXTO
+        ElevatedButton(
+          onPressed: () {
+            // navegación / acción futura
+          },
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(40, 32),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+          ),
+          child: const Text('Ver', style: TextStyle(fontSize: 12)),
+        ),
+        BlocBuilder<PlanetBloc, PlanetState>(
+          builder: (context, state) {
+            final isFavorite = state is PlanetFavoriteState &&
+                state.favoritePlanet?.id == planet.id;
+
+            return IconButton(
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? Colors.red : Colors.grey,
+              ),
+              onPressed: () {
+                context
+                    .read<PlanetBloc>()
+                    .add(SetFavoritePlanetEvent(planet));
+              },
+            );
+          },
+        ),
+      ],
     );
-  },
-);
   }
 }

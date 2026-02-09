@@ -1,5 +1,6 @@
 import 'package:dragonball/features/characters/presentation/bloc/characters_bloc.dart';
 import 'package:dragonball/features/characters/presentation/pages/characters_page.dart';
+import 'package:dragonball/features/planets/presentation/bloc/planet_bloc.dart';
 import 'package:dragonball/features/planets/presentation/pages/planets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,16 +33,28 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(icon: Icon(Icons.commute), label: 'Planets'),
         ],
       ),
-      body: IndexedStack(
-        index: currentPageIndex,
-        children: [
+      appBar: AppBar(
+        title: Text(
+            currentPageIndex == 0 ? 'Characters' : 'Planets',
+          ),
+      ),
+       body: MultiBlocProvider(
+        providers: [
+          BlocProvider<PlanetBloc>(
+            create: (_) => gt<PlanetBloc>(),
+          ),
           BlocProvider<CharactersBloc>(
             create: (_) => gt<CharactersBloc>()
-            ..add(const GetCharactersEvent(page: 1, limit: 5)),
-            child: const CharactersPage(),
+              ..add(const GetCharactersEvent(page: 1, limit: 5)),
           ),
-          const PlanetsPage(),
         ],
+        child: IndexedStack(
+          index: currentPageIndex,
+          children: const [
+            CharactersPage(),
+            PlanetsPage(),
+          ],
+        ),
       ),
     );
   }

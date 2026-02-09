@@ -27,18 +27,6 @@ class MyApp extends StatelessWidget {
 
       // ✅ Home global
       home: const HomePage(),
-
-      // ✅ Rutas
-      routes: {
-        '/characters': (_) => BlocProvider<CharactersBloc>(
-              create: (_) => gt<CharactersBloc>()
-                ..add(const GetCharactersEvent(page: 1, limit: 5)),
-              child: const CharactersPage(),
-            ),
-
-      // ✅ Planets SIN Bloc
-      '/planets': (_) => const PlanetsPage(),
-      },
     );
   }
 }

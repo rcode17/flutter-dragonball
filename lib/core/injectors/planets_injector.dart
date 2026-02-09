@@ -1,5 +1,7 @@
 
 
+import 'package:dragonball/features/planets/presentation/bloc/planet_bloc.dart';
+
 import '../../features/planets/data/datasources/planet_remote_datasource.dart';
 import '../../features/planets/data/repositories/planet_repository_impl.dart';
 import '../../features/planets/domain/repositories/planet_repository.dart';
@@ -16,6 +18,11 @@ Future<void> initPlanets() async {
   gt.registerLazySingleton<PlanetRepository>(
     () => PlanetRepositoryImpl(gt()),
   );
+
+  gt.registerFactory<PlanetBloc>(
+    () => PlanetBloc(),
+  );
+
 
   // 🔹 Use cases
   gt.registerLazySingleton(() => GetPlanets(gt()));
