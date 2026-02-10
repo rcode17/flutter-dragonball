@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../core/injectors/injector_all.dart';
+import '../../../../core/network/env.dart';
 import '../../domain/entities/planet.dart';
 import '../../domain/entities/pagination_meta.dart';
 import '../../domain/usecases/get_planets.dart';
@@ -34,13 +35,13 @@ class _PlanetsPageState extends State<PlanetsPage> {
     _getPlanets = gt<GetPlanets>();
     _loadPlanets();
     _controller = WebViewController()
-      ..setJavaScriptMode(
-        JavaScriptMode.unrestricted,
-      ) // Permite ejecución de JS
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..clearCache()
       ..clearLocalStorage()
-      ..loadRequest(Uri.parse('https://web.dragonball-api.com/documentation'));
+      ..loadRequest(
+        Uri.parse(Env.webViewUrl),
+      );
   }
 
   Future<void> _loadPlanets({int page = 1}) async {
@@ -145,7 +146,7 @@ class _PlanetsPageState extends State<PlanetsPage> {
 
               /// 📄 DESCRIPCIÓN
               Text(
-                planet.description,
+                'planet.description',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 14, height: 1.3),
@@ -161,8 +162,8 @@ class _PlanetsPageState extends State<PlanetsPage> {
         ElevatedButton(
           onPressed: () => _showWebView(
             context,
-            'https://pub.dev/',
-          ), // Aquí iría planet.wikiUrl o similar
+            Env.webViewUrl,
+          ),
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(40, 32),
             padding: const EdgeInsets.symmetric(horizontal: 12),
