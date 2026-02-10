@@ -38,7 +38,9 @@ class _PlanetsPageState extends State<PlanetsPage> {
         JavaScriptMode.unrestricted,
       ) // Permite ejecución de JS
       ..setBackgroundColor(const Color(0x00000000))
-      ..loadRequest(Uri.parse('https://pub.dev/'));
+      ..clearCache()
+      ..clearLocalStorage()
+      ..loadRequest(Uri.parse('https://web.dragonball-api.com/documentation'));
   }
 
   Future<void> _loadPlanets({int page = 1}) async {
