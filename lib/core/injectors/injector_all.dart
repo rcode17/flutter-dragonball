@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
 import 'characters_injector.dart';
+import 'documentation_injector.dart';
 
 final gt = GetIt.instance;
 
@@ -12,4 +13,5 @@ Future<void> initInjectors() async {
 
   await initPlanets(); 
   await initCharactersInjector();
+  await initDocumentationInjector();
 }

@@ -1,12 +1,13 @@
 import 'package:dragonball/features/characters/presentation/bloc/characters_bloc.dart';
 import 'package:dragonball/features/characters/presentation/pages/characters_page.dart';
-import 'package:dragonball/features/documentations/presentation/documentation.dart';
+import 'package:dragonball/features/documentations/presentation/pages/documentation.dart';
 import 'package:dragonball/features/planets/presentation/bloc/planet_bloc.dart';
 import 'package:dragonball/features/planets/presentation/pages/planets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/injectors/injector_all.dart';
+import '../../../documentations/presentation/bloc/web_view_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,6 +47,9 @@ class _HomePageState extends State<HomePage> {
             create: (_) =>
                 gt<CharactersBloc>()
                   ..add(const GetCharactersEvent(page: 1, limit: 5)),
+          ),
+          BlocProvider<WebViewBloc>(
+            create: (_) => gt<WebViewBloc>(),
           ),
         ],
         child: IndexedStack(
